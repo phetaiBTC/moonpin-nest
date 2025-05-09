@@ -1,22 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-
+import { District } from "@/district/entities/district.entity";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
-
     @Column()
     username: string;
-
-    @Column({ unique: true })
+    @Column()
     email: string;
-
     @Column()
     password: string;
-
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: Date;
-
-    @UpdateDateColumn({ type: 'timestamp' })
-    updatedAt: Date;
+    @Column()
+    phone: string;
+    @Column()
+    isVerified: boolean;
+    @ManyToOne(() => District, (district) => district.users)
+    district: District
 }
