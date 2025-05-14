@@ -8,10 +8,10 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,                      // ลบ properties ที่ไม่อยู่ใน DTO
       forbidNonWhitelisted: true,           // ปฏิเสธข้อมูลที่มี properties ที่ไม่อยู่ใน DTO
-      transform: true,                      // ใช้แปลงค่า
-      transformOptions: {
-        enableImplicitConversion: true,
-      }
+      // transform: true,                      // ใช้แปลงค่า
+      // transformOptions: {
+      //   enableImplicitConversion: true,
+      // }
     }),
   );
 

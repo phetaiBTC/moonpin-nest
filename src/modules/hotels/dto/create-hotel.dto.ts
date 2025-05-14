@@ -1,3 +1,4 @@
+import { BaseDatabase } from "@/common/database/BaseDatabase";
 import { IsString, IsNumber, IsNotEmpty } from "class-validator";
 export class CreateHotelDto {
     @IsString()
@@ -9,8 +10,11 @@ export class CreateHotelDto {
     rating: number
     @IsString()
     image: string
-    @IsString()
+    @IsNumber()
     latitude: number
-    @IsString()
+    @IsNumber()
     longitude: number
+    @IsNotEmpty()
+    @IsNumber()
+    readonly district: number;
 }

@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class UsersService {
 
@@ -11,46 +13,58 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) { }
-  create(createUserDto: CreateUserDto) {
-    // return {message:createUserDto}
+  async create(createUserDto: CreateUserDto) {
     const user = this.usersRepository.create({
-      username: createUserDto.username,
-      email: createUserDto.email,
-      password: createUserDto.password,
-      phone: createUserDto.phone,
-      gender: createUserDto.gender,
-      district: { dr_id: createUserDto.district }
+      ...createUserDto,
+      district: { dr_id: createUserDto.district },
+      hotels: { id: createUserDto.hotels },
     });
-    this.usersRepository.save(user);
-    return { message: "User created successully", data: user }
+    try{
+      const save = await this.usersRepository.save(user);
+      return { message: "User created successully", data: save }
+    }catch(e){
+       if (e.code === '23505' || e.code === 'ER_DUP_ENTRY') {
+        throw new BadRequestException('email is already');
+      }
+      throw new InternalServerErrorException();
+    }
   }
 
-  async findAll() {
-    const users = await this.usersRepository.find({
-      relations: ['district','district.province'],
-    });
-    const mapper = users.map((user) => {
-      return {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        phone: user.phone,
-        gender: user.gender,
-        district: user.district.dr_name,
-        district_en: user.district.dr_name_en,
-        province: user.district.province.pr_name,
-        province_en: user.district.province.pr_name_en,
-        isVerified: user.isVerified,
-        created_at: user.created_at,
-        updated_at: user.updated_at
-      }
-    })
-    return { message: "All users", data: mapper };
+  async findAll(options: IPaginationOptions): Promise<Pagination<any>> {
+    const queryBuilder = this.usersRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.district', 'district')
+      .leftJoinAndSelect('district.province', 'province')
+      .leftJoinAndSelect('user.hotels', 'hotels')
+      .orderBy('user.created_at', 'DESC');
+    const paginated = await paginate(queryBuilder, options);
+    // console.log(paginated)
+
+    const mapped = paginated.items.map(user => ({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender,
+      hotels: user.hotels || null,
+      district: user.district?.dr_name || null,
+      district_en: user.district?.dr_name_en || null,
+      province: user.district?.province?.pr_name || null,
+      province_en: user.district?.province?.pr_name_en || null,
+      isVerified: user.isVerified,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    }));
+
+    return {
+      ...paginated,
+      items: mapped,
+    };
   }
+
 
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.usersRepository.findOneBy({ id: id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

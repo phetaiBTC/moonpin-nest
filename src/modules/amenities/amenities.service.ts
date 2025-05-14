@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
-
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Amenity } from './entities/amenity.entity';
 @Injectable()
 export class AmenitiesService {
-  create(createAmenityDto: CreateAmenityDto) {
-    return 'This action adds a new amenity';
+
+  constructor(@InjectRepository(Amenity) private amenityRepository: Repository<Amenity>) { }
+  async create(createAmenityDto: CreateAmenityDto) {
+    const data = await this.amenityRepository.save(createAmenityDto)
+    return {
+      message: "create amenity successfully",
+      data
+    };
   }
 
   findAll() {

@@ -10,8 +10,9 @@ export class BookingsService {
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
   ) { }
-  create(createBookingDto: CreateBookingDto) {
-    return 'This action adds a new booking';
+  async create(createBookingDto: CreateBookingDto) {
+    const data =await this.bookingRepository.save(createBookingDto)
+    return {message: 'create booking successfully', data};
   }
 
   findAll() {

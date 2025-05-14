@@ -9,5 +9,6 @@ import { DistrictModule } from '@/modules/district/district.module';
   imports: [TypeOrmModule.forFeature([User]),DistrictModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

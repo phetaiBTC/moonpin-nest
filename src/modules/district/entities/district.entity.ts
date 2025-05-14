@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
 import { Province } from "@/modules/province/entities/province.entity";
 import { User } from "@/modules/users/entities/user.entity";
+import { Hotel } from "@/modules/hotels/entities/hotel.entity";
 @Entity()
 export class District {
     @PrimaryGeneratedColumn()
@@ -13,4 +14,6 @@ export class District {
     province: Province
     @OneToMany(() => User, (user) => user.district)
     users: User[]
+    @OneToMany(() => Hotel, (hotel) => hotel.district)
+    hotels: Hotel[]
 }

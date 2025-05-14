@@ -9,10 +9,10 @@ import { UsersModule } from './modules/users/users.module';
 import { HotelsModule } from './modules/hotels/hotels.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
-import { AmenitiesModule } from './modules/amenities/amenities.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { AmenitiesModule } from './modules/amenities/amenities.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { RolesModule } from './modules/roles/roles.module';
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
       synchronize: true,
-    }), DistrictModule, ProvinceModule, UsersModule, HotelsModule, RoomsModule, BookingsModule, AmenitiesModule, PaymentsModule, ReviewsModule, RolesModule],
+    }), DistrictModule, ProvinceModule, UsersModule, HotelsModule, RoomsModule, BookingsModule, PaymentsModule, ReviewsModule, RolesModule, AmenitiesModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsNotEmpty, IsEnum, IsNumber } from "class-validator";
+import { IsEmail, IsString, IsNotEmpty, IsEnum, IsNumber,IsOptional } from "class-validator";
 import { Gender } from "../entities/user.entity";
 export class CreateUserDto {
     @IsString()
@@ -24,4 +24,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsNumber()
     readonly district: number;
+    
+    // @IsEmpty()
+    @IsOptional()
+    @IsNumber()
+    readonly hotels?: number;
 }

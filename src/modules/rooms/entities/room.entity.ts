@@ -1,11 +1,16 @@
 import { BaseDatabase } from '@/common/database/BaseDatabase';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Hotel } from '@/modules/hotels/entities/hotel.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+export enum Status {
+    AVAILABLE = 'available',
+    UNAVAILABLE = 'unavailable'
+}
 @Entity()
 export class Room extends BaseDatabase {
     @PrimaryGeneratedColumn()
     id: number;
     @Column()
-    name: string;
+    room_number: string;
     @Column()
     description: string;
     @Column()
@@ -14,4 +19,12 @@ export class Room extends BaseDatabase {
     image: string;
     @Column()
     status: string;
+    @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
+    hotel: Hotel
+    @Column()
+    bedroom: number
+    @Column()
+    bathroom: number
+    @Column()
+    kitchen: number
 }
