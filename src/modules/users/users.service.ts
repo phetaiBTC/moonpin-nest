@@ -19,11 +19,11 @@ export class UsersService {
       district: { dr_id: createUserDto.district },
       hotels: { id: createUserDto.hotels },
     });
-    try{
+    try {
       const save = await this.usersRepository.save(user);
       return { message: "User created successully", data: save }
-    }catch(e){
-       if (e.code === '23505' || e.code === 'ER_DUP_ENTRY') {
+    } catch (e) {
+      if (e.code === '23505' || e.code === 'ER_DUP_ENTRY') {
         throw new BadRequestException('email is already');
       }
       throw new InternalServerErrorException();
@@ -66,12 +66,17 @@ export class UsersService {
   findOne(id: number) {
     return this.usersRepository.findOneBy({ id: id });
   }
-
+  findByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email: email });
+  }
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+  findOneByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email: email });
   }
 }

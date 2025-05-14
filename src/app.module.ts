@@ -13,6 +13,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { AmenitiesModule } from './modules/amenities/amenities.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { AmenitiesModule } from './modules/amenities/amenities.module';
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
       synchronize: true,
-    }), DistrictModule, ProvinceModule, UsersModule, HotelsModule, RoomsModule, BookingsModule, PaymentsModule, ReviewsModule, RolesModule, AmenitiesModule],
+    }), DistrictModule, ProvinceModule, UsersModule, HotelsModule, RoomsModule, BookingsModule, PaymentsModule, ReviewsModule, RolesModule, AmenitiesModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
