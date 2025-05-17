@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProvinceDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Province } from './entities/province.entity';
 @Injectable()
 export class ProvinceService {
+  constructor(
+    @InjectRepository(Province)
+    private readonly provinceRepository: Repository<Province>,
+  ){
+
+  }
   create(createProvinceDto: CreateProvinceDto) {
     return 'This action adds a new province';
   }
 
   findAll() {
-    return `This action returns all province`;
+    return this.provinceRepository.find();
   }
 
   findOne(id: number) {
