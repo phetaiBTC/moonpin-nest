@@ -26,7 +26,9 @@ export class Hotel extends BaseDatabase {
     @OneToMany(() => User, (user) => user.hotels)
     users: User[];
     @OneToMany(() => Room, (room) => room.hotel)
-    rooms: Room[]
+    rooms: Room[];
+    @OneToMany(()=>Review,(reivew)=>reivew.hotels)
+    review:Review[];
     // @OneToMany(()=>Review,(review)=>review.hotel)
     // reviews: Review[]
 }

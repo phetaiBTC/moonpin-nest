@@ -1,14 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/create-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import *as bcryptjs from'bcryptjs'
 
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService, private usersService: UsersService) { }
   async validateUser(loginDto: LoginDto): Promise<any> {
     const user = await this.usersService.findOneByEmail(loginDto.email);
-    if (user && user.password === loginDto.password) {
+    if(!user){
+      throw new NotFoundException("user notfound")
+    }
+    const isMatch = await bcryptjs.compare(loginDto.password,user.password)
+    if (isMatch) {
       const { password, ...result } = user;
       return result;
     }

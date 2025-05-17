@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-
+import { Repository } from 'typeorm';
+import { Review } from './entities/review.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class ReviewsService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>
+  ) {
+
+  }
+  async create(createReviewDto: CreateReviewDto) {
+    const review = this.reviewRepository.create({
+      rating: createReviewDto.rating,
+      comments: createReviewDto.comments,
+      status: createReviewDto.status,
+      users: { id: createReviewDto.users },
+      hotels: { id: createReviewDto.hotels },
+    });
+    await this.reviewRepository.save(review)
+    return {
+      message:"create review successfull",
+      item:review
+    }
+
   }
 
   findAll() {
-    return `This action returns all reviews`;
+    return this.reviewRepository.find()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} review`;
+    return this.reviewRepository.findOneBy({id})
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+   async remove(id: number) {
+    await this.reviewRepository.delete(id)
+    return {
+      message:"delete review successfully",
+    }
   }
 }

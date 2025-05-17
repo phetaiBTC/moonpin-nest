@@ -1,6 +1,7 @@
 import { BaseDatabase } from "@/common/database/BaseDatabase";
 import { District } from "@/modules/district/entities/district.entity";
 import { Hotel } from "@/modules/hotels/entities/hotel.entity";
+import { Review } from "@/modules/reviews/entities/review.entity";
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
 export enum Gender {
     MALE = 'male',
@@ -27,6 +28,9 @@ export class User extends BaseDatabase {
     district: District;
     @ManyToOne(() => Hotel, (hotel) => hotel.users)
     hotels: Hotel
+    @OneToMany(()=>Review,(review)=>review.users)
+    review:Review[];
+    
     // @ManyToOne(() => District, (district) => district.users, { nullable: false })
     // district: District;
 }
