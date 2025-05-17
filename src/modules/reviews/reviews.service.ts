@@ -22,8 +22,8 @@ export class ReviewsService {
     });
     await this.reviewRepository.save(review)
     return {
-      message:"create review successfull",
-      item:review
+      message: "create review successfull",
+      item: review
     }
 
   }
@@ -33,13 +33,13 @@ export class ReviewsService {
   }
 
   findOne(id: number) {
-    return this.reviewRepository.findOneBy({id})
+    return this.reviewRepository.findOneBy({ id })
   }
 
-   async remove(id: number) {
+  async remove(id: number) {
     await this.reviewRepository.delete(id)
     return {
-      message:"delete review successfully",
+      message: "delete review successfully",
     }
   }
 }
