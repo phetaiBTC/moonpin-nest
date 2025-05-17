@@ -5,7 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-
+import * as bcryptjs from 'bcryptjs'
 @Injectable()
 export class UsersService {
 
@@ -16,6 +16,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const user = this.usersRepository.create({
       ...createUserDto,
+      password:await bcryptjs.hash(createUserDto.password,10),
       district: { dr_id: createUserDto.district },
       hotels: { id: createUserDto.hotels },
     });
