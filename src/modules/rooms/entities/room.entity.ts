@@ -1,4 +1,5 @@
 import { BaseDatabase } from '@/common/database/BaseDatabase';
+import { Amenity } from '@/modules/amenities/entities/amenity.entity';
 import { Hotel } from '@/modules/hotels/entities/hotel.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 export enum Status {
@@ -17,8 +18,8 @@ export class Room extends BaseDatabase {
     price: number;
     @Column()
     image: string;
-    @Column()
-    status: string;
+    @Column({ type: 'enum', enum: Status })
+    status: Status;
     @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
     hotel: Hotel
     @Column()
@@ -27,4 +28,6 @@ export class Room extends BaseDatabase {
     bathroom: number
     @Column()
     kitchen: number
+    @ManyToOne(() => Amenity, (amenity) => amenity.rooms)
+    amenities: Amenity
 }

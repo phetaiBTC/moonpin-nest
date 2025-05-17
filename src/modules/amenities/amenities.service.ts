@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
 import { Repository } from 'typeorm';
@@ -16,19 +16,29 @@ export class AmenitiesService {
     };
   }
 
-  findAll() {
-    return `This action returns all amenities`;
+  async findAll() {
+    return await this.amenityRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} amenity`;
+  async findOne(id: number) {
+    const data = await this.amenityRepository.findOneBy({ id: id });
+    if (!data) {
+      throw new NotFoundException('Amenity not found');
+    }
+    return data;
   }
 
-  update(id: number, updateAmenityDto: UpdateAmenityDto) {
-    return `This action updates a #${id} amenity`;
+  async update(id: number, updateAmenityDto: UpdateAmenityDto) {
+    await this.amenityRepository.update(id, updateAmenityDto)
+    return {
+      message: "update amenity successfully",
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} amenity`;
+  async remove(id: number) {
+    await this.amenityRepository.delete(id)
+    return {
+      message: "delete amenity successfully",
+    };
   }
 }

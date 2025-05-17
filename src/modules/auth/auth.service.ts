@@ -22,6 +22,7 @@ export class AuthService {
     }
     const payload = { email: user.email, sub: user.id, username: user.id };
     return {
+      message:"Login successfully",
       access_token: this.jwtService.sign(payload),
     };
   }
