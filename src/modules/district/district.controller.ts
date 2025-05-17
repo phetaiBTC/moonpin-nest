@@ -7,28 +7,8 @@ import { UpdateDistrictDto } from './dto/update-district.dto';
 export class DistrictController {
   constructor(private readonly districtService: DistrictService) {}
 
-  @Post()
-  create(@Body() createDistrictDto: CreateDistrictDto) {
-    return this.districtService.create(createDistrictDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.districtService.findAll();
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.districtService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDistrictDto: UpdateDistrictDto) {
-    return this.districtService.update(+id, updateDistrictDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.districtService.remove(+id);
+  findByProvince(@Param('id') id: number) {
+    return this.districtService.findByProvince(id);
   }
 }

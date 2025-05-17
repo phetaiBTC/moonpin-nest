@@ -8,26 +8,18 @@ import { District } from './entities/district.entity';
 export class DistrictService {
   constructor(
     @InjectRepository(District) private districtRepository: Repository<District>,
-  ){}
-  create(createDistrictDto: CreateDistrictDto) {
-    return 'This action adds a new district';
+  ) { }
+  findByProvince(id: number) {
+    return this.districtRepository.find({
+      where: {
+        province: {
+          pr_id: id
+        }
+      },
+      relations: ['province']
+    });
   }
 
-  findAll() {
-    return `This action returns all district`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} district`;
-  }
-
-  update(id: number, updateDistrictDto: UpdateDistrictDto) {
-    return `This action updates a #${id} district`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} district`;
-  }
 
   findOneBy(id: number) {
     return this.districtRepository.findOneBy({ dr_id: id });
