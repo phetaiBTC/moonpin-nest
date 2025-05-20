@@ -16,10 +16,11 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const user = this.usersRepository.create({
       ...createUserDto,
-      password:await bcryptjs.hash(createUserDto.password,10),
+      password: await bcryptjs.hash(createUserDto.password, 10),
       district: { dr_id: createUserDto.district },
       hotels: { id: createUserDto.hotels },
     });
+    // console.log(user);
     try {
       const save = await this.usersRepository.save(user);
       return { message: "User created successully", data: save }

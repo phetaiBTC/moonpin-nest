@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Amenity } from './entities/amenity.entity';
+import * as dayjs from 'dayjs';
+
 @Injectable()
 export class AmenitiesService {
 
@@ -17,8 +19,15 @@ export class AmenitiesService {
   }
 
   async findAll() {
-    return await this.amenityRepository.find();
+    const amenities = await this.amenityRepository.find();
+    return amenities.map(({ id, name, created_at, updated_at }) => ({
+      id,
+      name,
+      created_at: dayjs(created_at).format('DD-MM-YYYY HH:mm'),
+      updated_at: dayjs(updated_at).format('DD-MM-YYYY HH:mm'),
+    }));
   }
+
 
   async findOne(id: number) {
     const data = await this.amenityRepository.findOneBy({ id: id });
@@ -40,5 +49,17 @@ export class AmenitiesService {
     return {
       message: "delete amenity successfully",
     };
+  }
+
+  async findByName(name: string) {
+    const data = await this.amenityRepository.find({
+      where: { name: Like(`%${name}%`) },
+    });
+
+    if (!data.length) {
+      throw new NotFoundException('Amenity not found');
+    }
+
+    return data;
   }
 }
