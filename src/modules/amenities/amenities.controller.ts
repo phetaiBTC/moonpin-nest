@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, Request } from '@nestjs/common';
 import { AmenitiesService } from './amenities.service';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
@@ -15,13 +15,13 @@ export class AmenitiesController {
     return amenity;
   }
   @Post()
-  create(@Body() createAmenityDto: CreateAmenityDto) {
-    return this.amenitiesService.create(createAmenityDto);
+  create(@Body() createAmenityDto: CreateAmenityDto, @Request() req) {
+    return this.amenitiesService.create(createAmenityDto, req.user.hotel);
   }
 
   @Get()
-  findAll() {
-    return this.amenitiesService.findAll();
+  findAll(@Request() req) {
+    return this.amenitiesService.findAll(req.user.hotel);
   }
 
   @Get(':id')

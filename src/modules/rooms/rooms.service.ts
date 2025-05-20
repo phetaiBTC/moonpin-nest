@@ -9,8 +9,11 @@ import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginat
 @Injectable()
 export class RoomsService {
   constructor(@InjectRepository(Room) private roomRepository: Repository<Room>) { }
-  async create(createRoomDto: CreateRoomDto) {
-    const room = this.roomRepository.create(createRoomDto);
+  async create(createRoomDto: CreateRoomDto, hotelId: number) {
+    const room = this.roomRepository.create({
+      ...createRoomDto,
+      hotel: { id: hotelId }
+    });
     await this.roomRepository.save(room);
     return {
       message: "Room created successfully",
@@ -18,10 +21,11 @@ export class RoomsService {
     };
   }
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<any>> {
+  async findAll(options: IPaginationOptions, hotelId: number): Promise<Pagination<any>> {
     const queryBuilder = this.roomRepository.createQueryBuilder('room')
       .leftJoinAndSelect('room.amenities', 'amenities')
       .leftJoinAndSelect('room.hotel', 'hotel')
+      .where('hotel.id = :hotelId', { hotelId })
       .orderBy('room.created_at', 'DESC');
 
     const paginated = await paginate(queryBuilder, options);

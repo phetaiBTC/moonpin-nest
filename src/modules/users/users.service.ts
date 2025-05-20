@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import * as bcryptjs from 'bcryptjs'
+import { formatTime } from '@/utils/formatTime';
 @Injectable()
 export class UsersService {
 
@@ -65,9 +66,32 @@ export class UsersService {
 
 
 
-  findOne(id: number) {
-    return this.usersRepository.findOneBy({ id: id });
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+      relations: ['district', 'district.province','hotels']
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const mapped = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender,
+      district: user.district?.dr_name || null,
+      district_en: user.district?.dr_name_en || null,
+      province: user.district?.province?.pr_name || null,
+      province_en: user.district?.province?.pr_name_en || null,
+      isVerified: user.isVerified,
+      hotels: user.hotels || null,
+      created_at: formatTime(user.created_at),
+      updated_at: formatTime(user.updated_at),
+    }
+    return mapped
   }
+
   findByEmail(email: string) {
     return this.usersRepository.findOneBy({ email: email });
   }
@@ -78,7 +102,32 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
-  findOneByEmail(email: string) {
-    return this.usersRepository.findOneBy({ email: email });
+  async findOneByEmail(email: string) {
+    
+    const user = await this.usersRepository.findOne({
+      where: { email },
+      relations: ['district', 'district.province','hotels']
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    
+    const mapped = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      password: user.password,
+      gender: user.gender,
+      district: user.district?.dr_name || null,
+      district_en: user.district?.dr_name_en || null,
+      province: user.district?.province?.pr_name || null,
+      province_en: user.district?.province?.pr_name_en || null,
+      isVerified: user.isVerified,
+      hotels: user.hotels || null,
+      created_at: formatTime(user.created_at),
+      updated_at: formatTime(user.updated_at),
+    }
+    return mapped
   }
 }

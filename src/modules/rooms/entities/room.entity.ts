@@ -18,7 +18,7 @@ export class Room extends BaseDatabase {
     price: number;
     @Column()
     image: string;
-    @Column({ type: 'enum', enum: Status })
+    @Column({ type: 'enum', enum: Status , default: Status.AVAILABLE })
     status: Status;
     @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
     hotel: Hotel

@@ -4,27 +4,30 @@ import { UpdateAmenityDto } from './dto/update-amenity.dto';
 import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Amenity } from './entities/amenity.entity';
-import * as dayjs from 'dayjs';
+import { formatTime } from '@/utils/formatTime';
 
 @Injectable()
 export class AmenitiesService {
 
   constructor(@InjectRepository(Amenity) private amenityRepository: Repository<Amenity>) { }
-  async create(createAmenityDto: CreateAmenityDto) {
-    const data = await this.amenityRepository.save(createAmenityDto)
+  async create(createAmenityDto: CreateAmenityDto, hotelId: number) {
+    const data = await this.amenityRepository.save({
+      name: createAmenityDto.name,
+      hotels: { id: hotelId }
+    })
     return {
       message: "create amenity successfully",
       data
     };
   }
 
-  async findAll() {
-    const amenities = await this.amenityRepository.find();
+  async findAll(hotelId: number) {
+    const amenities = await this.amenityRepository.find({ where: { hotel: { id: hotelId } } });
     return amenities.map(({ id, name, created_at, updated_at }) => ({
       id,
       name,
-      created_at: dayjs(created_at).format('DD-MM-YYYY HH:mm'),
-      updated_at: dayjs(updated_at).format('DD-MM-YYYY HH:mm'),
+      created_at: formatTime(created_at),
+      updated_at: formatTime(updated_at),
     }));
   }
 

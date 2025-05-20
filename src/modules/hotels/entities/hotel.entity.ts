@@ -1,4 +1,5 @@
 import { BaseDatabase } from "@/common/database/BaseDatabase";
+import { Amenity } from "@/modules/amenities/entities/amenity.entity";
 import { District } from "@/modules/district/entities/district.entity";
 import { Review } from "@/modules/reviews/entities/review.entity";
 import { Room } from "@/modules/rooms/entities/room.entity";
@@ -27,8 +28,11 @@ export class Hotel extends BaseDatabase {
     users: User[];
     @OneToMany(() => Room, (room) => room.hotel)
     rooms: Room[];
-    @OneToMany(()=>Review,(reivew)=>reivew.hotels)
-    review:Review[];
+    @OneToMany(() => Review, (reivew) => reivew.hotels)
+    review: Review[];
+    @OneToMany(() => Amenity, (amenity) => amenity.hotel)
+    amenities: Amenity[];
+
     // @OneToMany(()=>Review,(review)=>review.hotel)
     // reviews: Review[]
 }
