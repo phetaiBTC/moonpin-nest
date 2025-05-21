@@ -13,7 +13,7 @@ export class AmenitiesService {
   async create(createAmenityDto: CreateAmenityDto, hotelId: number) {
     const data = await this.amenityRepository.save({
       name: createAmenityDto.name,
-      hotels: { id: hotelId }
+      hotel: { id: hotelId }
     })
     return {
       message: "create amenity successfully",
