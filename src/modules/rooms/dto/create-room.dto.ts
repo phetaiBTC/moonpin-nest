@@ -23,6 +23,6 @@ export class CreateRoomDto {
     kitchen: number
     @IsArray()
     @IsNumber({}, { each: true })
-    @IsNotEmpty()
+    @IsOptional()
     amenities: number[];
 }
