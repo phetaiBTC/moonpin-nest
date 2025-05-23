@@ -5,13 +5,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Room } from './entities/room.entity';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-
+import { formatTime } from '@/utils/formatTime';
 @Injectable()
 export class RoomsService {
   constructor(@InjectRepository(Room) private roomRepository: Repository<Room>) { }
   async create(createRoomDto: CreateRoomDto, hotelId: number) {
+    // console.log(createRoomDto.amenities)
     const room = this.roomRepository.create({
       ...createRoomDto,
+      amenities: createRoomDto.amenities.map(id => ({ id })),
       hotel: { id: hotelId }
     });
     await this.roomRepository.save(room);
@@ -41,7 +43,9 @@ export class RoomsService {
       hotel: room.hotel,
       bedroom: room.bedroom,
       bathroom: room.bathroom,
-      kitchen: room.kitchen
+      kitchen: room.kitchen,
+      created_at: formatTime(room.created_at),
+      updated_at: formatTime(room.updated_at),
     }));
 
     return {
@@ -55,7 +59,11 @@ export class RoomsService {
   }
 
   async update(id: number, updateRoomDto: UpdateRoomDto) {
-    await this.roomRepository.update(id, updateRoomDto);
+    const room = await this.roomRepository.create({
+      ...updateRoomDto,
+      amenities: updateRoomDto.amenities?.map(id => ({ id }))
+    });
+    await this.roomRepository.update(id, room);
     return {
       message: "update room successfully",
     };

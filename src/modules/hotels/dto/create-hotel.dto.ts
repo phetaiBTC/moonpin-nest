@@ -8,8 +8,6 @@ export class CreateHotelDto {
     description: string
     @IsNumber()
     rating: number
-    @IsString()
-    image: string
     @IsNumber()
     latitude: number
     @IsNumber()

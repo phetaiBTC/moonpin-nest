@@ -1,7 +1,7 @@
 import { BaseDatabase } from '@/common/database/BaseDatabase';
 import { Amenity } from '@/modules/amenities/entities/amenity.entity';
 import { Hotel } from '@/modules/hotels/entities/hotel.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 export enum Status {
     AVAILABLE = 'available',
     UNAVAILABLE = 'unavailable'
@@ -28,6 +28,7 @@ export class Room extends BaseDatabase {
     bathroom: number
     @Column()
     kitchen: number
-    @ManyToOne(() => Amenity, (amenity) => amenity.rooms)
-    amenities: Amenity
+    @ManyToMany(() => Amenity, (amenity) => amenity.rooms, { cascade: true })
+    @JoinTable()
+    amenities: Amenity[]
 }

@@ -1,4 +1,4 @@
-import { IsString,IsNotEmpty,IsNumber,IsOptional, IsEnum } from "class-validator";
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum, IsArray } from "class-validator";
 import { Status } from "../entities/room.entity";
 export class CreateRoomDto {
     @IsString()
@@ -21,4 +21,8 @@ export class CreateRoomDto {
     bathroom: number
     @IsNumber()
     kitchen: number
+    @IsArray()
+    @IsNumber({}, { each: true })
+    @IsNotEmpty()
+    amenities: number[];
 }
