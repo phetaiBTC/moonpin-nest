@@ -65,4 +65,11 @@ export class AmenitiesService {
 
     return data;
   }
+  async findByHotelId(hotelId: number) {
+    const data = await this.amenityRepository.find({ where: { hotel: { id: hotelId } } ,relations: ['hotel'] });
+    if (!data.length) {
+      throw new NotFoundException('Amenity not found');
+    }
+    return data;
+  }
 }

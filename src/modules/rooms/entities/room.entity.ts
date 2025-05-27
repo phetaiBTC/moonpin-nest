@@ -29,6 +29,6 @@ export class Room extends BaseDatabase {
     @Column()
     kitchen: number
     @ManyToMany(() => Amenity, (amenity) => amenity.rooms, { cascade: true })
-    @JoinTable()
+    @JoinTable({name:"room_amenities"})
     amenities: Amenity[]
 }
