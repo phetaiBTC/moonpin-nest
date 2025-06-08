@@ -8,7 +8,7 @@ export class RoomsController {
   constructor(private readonly roomsService: RoomsService) { }
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto, @Request() req) {
+  create(@Body() createRoomDto: CreateRoomDto, @Request() req: any) {
     return this.roomsService.create(createRoomDto, req.user.hotel);
   }
 
@@ -27,8 +27,8 @@ export class RoomsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomsService.update(+id, updateRoomDto);
+  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto, @Request() req: any) {
+    return this.roomsService.update(+id, updateRoomDto, req.user.hotel);
   }
 
   @Delete(':id')

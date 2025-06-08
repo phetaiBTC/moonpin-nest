@@ -34,52 +34,66 @@ export class RoomsService {
 
 
   async findAll(options: IPaginationOptions, hotelId: number) {
-  const queryBuilder = this.roomRepository.createQueryBuilder('room')
-    .leftJoinAndSelect('room.amenities', 'amenities')
-    .leftJoinAndSelect('room.hotel', 'hotel')
-    .where('hotel.id = :hotelId', { hotelId })
-    .orderBy('room.created_at', 'DESC')
-    .distinct(true); // ป้องกันแถวซ้ำ
+    const queryBuilder = this.roomRepository.createQueryBuilder('room')
+      .leftJoinAndSelect('room.amenities', 'amenities')
+      .leftJoinAndSelect('room.hotel', 'hotel')
+      .where('hotel.id = :hotelId', { hotelId })
+      .orderBy('room.created_at', 'DESC')
+      .distinct(true); // ป้องกันแถวซ้ำ
 
-  const paginated = await paginate(queryBuilder, options);
+    const paginated = await paginate(queryBuilder, options);
 
-  const mappedItems = paginated.items.map((room) => ({
-    id: room.id,
-    room_number: room.room_number,
-    description: room.description,
-    price: room.price,
-    image: room.image,
-    status: room.status,
-    amenities: room.amenities,
-    hotel: room.hotel,
-    bedroom: room.bedroom,
-    bathroom: room.bathroom,
-    kitchen: room.kitchen,
-    created_at: formatTime(room.created_at),
-    updated_at: formatTime(room.updated_at),
-  }));
+    const mappedItems = paginated.items.map((room) => ({
+      id: room.id,
+      room_number: room.room_number,
+      description: room.description,
+      price: room.price,
+      image: room.image,
+      status: room.status,
+      amenities: room.amenities,
+      hotel: room.hotel,
+      bedroom: room.bedroom,
+      bathroom: room.bathroom,
+      kitchen: room.kitchen,
+      created_at: formatTime(room.created_at),
+      updated_at: formatTime(room.updated_at),
+    }));
 
-  return {
-    ...paginated,
-    items: mappedItems,
-  };
-}
+    return {
+      ...paginated,
+      items: mappedItems,
+    };
+  }
 
 
   findOne(id: number) {
     return this.roomRepository.findOneBy({ id: id });
   }
 
-  async update(id: number, updateRoomDto: UpdateRoomDto) {
-    const room = await this.roomRepository.create({
-      ...updateRoomDto,
-      amenities: updateRoomDto.amenities?.map(id => ({ id }))
+  async update(id: number, updateRoomDto: UpdateRoomDto, hotelId: number) {
+    const existingRoom = await this.roomRepository.findOne({
+      where: { id },
+      relations: ['amenities', 'hotel'], // ดึง relation มาด้วย
     });
-    await this.roomRepository.update(id, room);
+
+    if (!existingRoom) {
+      throw new NotFoundException('Room not found');
+    }
+
+    const updatedRoom = {
+      ...existingRoom,
+      ...updateRoomDto,
+      amenities: updateRoomDto.amenities?.map(id => ({ id })) || [],
+      hotel: { id: hotelId },
+    };
+
+    await this.roomRepository.save(updatedRoom);
+
     return {
-      message: "update room successfully",
+      message: "Update room successfully",
     };
   }
+
 
   async remove(id: number) {
     await this.roomRepository.delete(id);
